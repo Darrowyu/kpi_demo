@@ -9,9 +9,13 @@ import {
   ChevronLeft,
   ChevronRight,
   BarChart3,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { useState } from 'react'
+
+type Theme = 'light' | 'dark'
 
 interface MenuItem {
   key: string
@@ -32,44 +36,32 @@ const menuItems: MenuItem[] = [
 interface SidebarProps {
   collapsed: boolean
   onCollapse: (collapsed: boolean) => void
+  theme: Theme
+  onToggleTheme: () => void
 }
 
-export function Sidebar({ collapsed, onCollapse }: SidebarProps) {
+export function Sidebar({ collapsed, onCollapse, theme, onToggleTheme }: SidebarProps) {
   const location = useLocation()
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-40 h-screen flex flex-col transition-all duration-300 ease-in-out',
+        'fixed left-0 top-0 z-40 h-screen flex flex-col bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 ease-in-out',
         collapsed ? 'w-20' : 'w-64'
       )}
-      style={{
-        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-        borderRight: '1px solid rgba(226, 232, 240, 0.8)',
-        boxShadow: '4px 0 24px rgba(0, 0, 0, 0.04)',
-      }}
     >
       {/* Logo区域 */}
       <div
         className={cn(
-          'flex h-20 items-center flex-shrink-0 transition-all duration-300',
-          collapsed ? 'justify-center px-4' : 'justify-between px-6'
+          'flex h-16 items-center flex-shrink-0 border-b border-zinc-200 dark:border-zinc-800 transition-all duration-300',
+          collapsed ? 'justify-center px-4' : 'justify-between px-4'
         )}
-        style={{
-          borderBottom: '1px solid rgba(226, 232, 240, 0.6)',
-        }}
       >
         {/* 折叠状态：仅显示图标 */}
         {collapsed && (
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-200 hover:scale-105"
-            style={{
-              background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-              boxShadow: '0 4px 14px rgba(8, 145, 178, 0.35)',
-            }}
-          >
-            <BarChart3 className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+            <BarChart3 className="w-5 h-5 text-zinc-700 dark:text-zinc-100" />
           </div>
         )}
 
@@ -78,34 +70,21 @@ export function Sidebar({ collapsed, onCollapse }: SidebarProps) {
           <>
             <div className="flex items-center gap-3">
               {/* Logo图标 */}
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-200 hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-                  boxShadow: '0 4px 14px rgba(8, 145, 178, 0.35)',
-                }}
-              >
-                <BarChart3 className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-zinc-700 dark:text-zinc-100" />
               </div>
               {/* 标题区域 */}
               <div>
-                <span
-                  className="text-lg font-bold block leading-tight"
-                  style={{
-                    background: 'linear-gradient(135deg, #0e7490 0%, #4f46e5 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
+                <span className="text-base font-semibold block leading-tight text-zinc-900 dark:text-zinc-100">
                   KPI绩效
                 </span>
-                <span className="text-xs text-slate-400 font-medium">管理系统</span>
+                <span className="text-xs text-zinc-500">管理系统</span>
               </div>
             </div>
             {/* 折叠按钮 */}
             <button
               onClick={() => onCollapse(true)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all duration-200"
+              className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <ChevronLeft size={18} />
             </button>
@@ -114,7 +93,7 @@ export function Sidebar({ collapsed, onCollapse }: SidebarProps) {
       </div>
 
       {/* 菜单区域 */}
-      <nav className="flex-1 space-y-1 p-3 mt-2 overflow-y-auto">
+      <nav className="flex-1 space-y-1 p-2 mt-2 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path ||
             (item.path !== '/' && location.pathname.startsWith(item.path))
@@ -128,61 +107,36 @@ export function Sidebar({ collapsed, onCollapse }: SidebarProps) {
               onMouseEnter={() => setHoveredItem(item.key)}
               onMouseLeave={() => setHoveredItem(null)}
               className={cn(
-                'group relative flex items-center gap-3 rounded-[12px] text-sm font-medium transition-all duration-200',
-                collapsed ? 'justify-center p-3' : 'px-4 py-3 mx-1',
+                'group relative flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-200',
+                collapsed ? 'justify-center p-3' : 'px-3 py-2.5',
                 isActive
-                  ? 'text-cyan-700'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
+                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:bg-zinc-800/50'
               )}
-              style={{
-                background: isActive
-                  ? 'linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(79, 70, 229, 0.06) 100%)'
-                  : isHovered
-                    ? 'rgba(241, 245, 249, 0.8)'
-                    : 'transparent',
-              }}
             >
-              {/* 激活指示器 - 左侧渐变条 */}
+              {/* 激活指示器 - 左侧白条 */}
               {isActive && (
-                <div
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-r-full"
-                  style={{
-                    background: 'linear-gradient(180deg, #0891b2, #4f46e5)',
-                  }}
-                />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-zinc-900 dark:bg-zinc-100 rounded-r" />
               )}
 
               {/* 图标容器 */}
               <div
                 className={cn(
                   'flex items-center justify-center transition-all duration-200',
-                  collapsed ? 'w-10 h-10' : 'w-10 h-10'
+                  collapsed ? 'w-9 h-9' : 'w-8 h-8',
+                  isActive
+                    ? 'text-zinc-900 dark:text-zinc-100'
+                    : 'text-zinc-400 group-hover:text-zinc-700 dark:text-zinc-500 dark:group-hover:text-zinc-300'
                 )}
-                style={{
-                  borderRadius: '10px',
-                  background: isActive
-                    ? 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)'
-                    : isHovered
-                      ? 'rgba(8, 145, 178, 0.1)'
-                      : 'rgba(241, 245, 249, 0.5)',
-                  boxShadow: isActive ? '0 4px 12px rgba(8, 145, 178, 0.3)' : 'none',
-                  transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-                }}
               >
-                <Icon
-                  size={collapsed ? 20 : 18}
-                  className={cn(
-                    'transition-colors duration-200',
-                    isActive ? 'text-white' : 'text-slate-500 group-hover:text-cyan-600'
-                  )}
-                />
+                <Icon size={collapsed ? 20 : 18} />
               </div>
 
               {/* 标签 */}
               {!collapsed && (
                 <span className={cn(
                   'transition-all duration-200',
-                  isActive ? 'font-semibold' : ''
+                  isActive ? 'font-medium' : ''
                 )}>
                   {item.label}
                 </span>
@@ -190,14 +144,7 @@ export function Sidebar({ collapsed, onCollapse }: SidebarProps) {
 
               {/* 悬停提示（仅折叠时显示） */}
               {collapsed && isHovered && (
-                <div
-                  className="absolute left-full ml-3 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap z-50"
-                  style={{
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    color: 'white',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-                  }}
-                >
+                <div className="absolute left-full ml-2 px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap z-50 bg-zinc-800 text-zinc-100 border border-zinc-700 shadow-lg">
                   {item.label}
                 </div>
               )}
@@ -206,56 +153,57 @@ export function Sidebar({ collapsed, onCollapse }: SidebarProps) {
         })}
       </nav>
 
-      {/* 展开按钮（仅折叠时显示） */}
-      {collapsed && (
-        <div className="flex-shrink-0 p-4 flex justify-center">
-          <button
-            onClick={() => onCollapse(false)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all duration-200"
-            style={{
-              background: 'rgba(255, 255, 255, 0.8)',
-              border: '1px solid rgba(226, 232, 240, 0.8)',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-            }}
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      )}
-
-      {/* 底部状态区（仅展开时显示） */}
-      {!collapsed && (
-        <div
-          className="flex-shrink-0 p-4"
-          style={{
-            borderTop: '1px solid rgba(226, 232, 240, 0.6)',
-          }}
-        >
-          {/* 玻璃态效果卡片 */}
-          <div
-            className="rounded-xl p-4"
-            style={{
-              background: 'rgba(255, 255, 255, 0.6)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.8)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
-            }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              {/* 绿色状态指示点（带发光效果） */}
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{
-                  background: 'linear-gradient(135deg, #10b981, #059669)',
-                  boxShadow: '0 0 8px rgba(16, 185, 129, 0.6), 0 0 16px rgba(16, 185, 129, 0.3)',
-                }}
-              />
-              <span className="text-xs font-medium text-slate-500">系统状态</span>
-            </div>
-            <p className="text-sm font-semibold text-slate-700">运行正常</p>
+      {/* 底部区域 - 展开按钮 / 主题切换 / 系统状态 */}
+      <div className="flex-shrink-0 p-3 border-t border-zinc-200 dark:border-zinc-800 space-y-3">
+        {/* 展开按钮（仅折叠时显示） */}
+        {collapsed && (
+          <div className="flex justify-center">
+            <button
+              onClick={() => onCollapse(false)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-200 border border-zinc-200 dark:border-zinc-800"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* 主题切换按钮 */}
+        <button
+          onClick={onToggleTheme}
+          className={cn(
+            'w-full flex items-center gap-3 rounded-lg transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+            collapsed ? 'justify-center p-2' : 'px-3 py-2',
+            'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200',
+            'hover:bg-zinc-100 dark:hover:bg-zinc-800'
+          )}
+          title={theme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
+        >
+          <div className="relative w-4 h-4">
+            <Sun
+              className={cn(
+                'w-4 h-4 absolute inset-0 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]',
+                theme === 'dark'
+                  ? 'opacity-100 rotate-0 scale-100'
+                  : 'opacity-0 rotate-90 scale-0'
+              )}
+            />
+            <Moon
+              className={cn(
+                'w-4 h-4 absolute inset-0 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]',
+                theme === 'light'
+                  ? 'opacity-100 rotate-0 scale-100'
+                  : 'opacity-0 -rotate-90 scale-0'
+              )}
+            />
+          </div>
+          {!collapsed && (
+            <span className="text-sm transition-opacity duration-300">
+              {theme === 'dark' ? '亮色模式' : '暗色模式'}
+            </span>
+          )}
+        </button>
+
+      </div>
     </aside>
   )
 }

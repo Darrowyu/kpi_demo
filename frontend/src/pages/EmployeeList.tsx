@@ -10,7 +10,6 @@ import { factoryApi, Factory } from '../services/standardParam'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
-import { Badge } from '../components/ui/badge'
 import { Avatar, AvatarFallback } from '../components/ui/avatar'
 import {
   Dialog,
@@ -50,28 +49,25 @@ import {
   Briefcase,
   Mail,
   Phone,
-  MapPin,
   RefreshCw
 } from 'lucide-react'
+import { cn } from '../lib/utils'
 
 const getInitials = (name: string): string => name.slice(0, 2).toUpperCase()
 
+// 状态徽章（终端风格）# 支持亮色/暗色双主题
 const StatusBadge = ({ status }: { status: string }) => {
   if (status === 'active') {
     return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
-        style={{ background: 'rgba(5, 150, 105, 0.1)', color: '#059669' }}
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+      <span className="badge-status-success">
+        <span className="w-1 h-1 rounded-full bg-emerald-600 dark:bg-emerald-400 mr-1.5" />
         在职
       </span>
     )
   }
   return (
-    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
-      style={{ background: 'rgba(100, 116, 139, 0.1)', color: '#64748b' }}
-    >
-      <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+    <span className="badge-status-neutral">
+      <span className="w-1 h-1 rounded-full bg-zinc-600 dark:bg-zinc-400 mr-1.5" />
       离职
     </span>
   )
@@ -81,38 +77,21 @@ const StatCard = ({
   title,
   value,
   icon: Icon,
-  gradient,
   delay = 0
 }: {
   title: string
   value: number
   icon: React.ElementType
-  gradient: string
   delay?: number
 }) => (
-  <Card
-    className="border-0 overflow-hidden animate-slide-up"
-    style={{
-      background: 'rgba(255, 255, 255, 0.9)',
-      backdropFilter: 'blur(20px)',
-      borderRadius: '16px',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-      animationDelay: `${delay}ms`
-    }}
-  >
-    <CardContent className="p-5 flex items-center gap-4">
-      <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{
-          background: gradient,
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
-        }}
-      >
-        <Icon className="w-6 h-6 text-white" />
+  <Card className="terminal-card">
+    <CardContent className="p-4 flex items-center gap-3">
+      <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
+        <Icon className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
       </div>
       <div>
-        <p className="text-sm text-slate-500 font-medium">{title}</p>
-        <p className="text-2xl font-bold text-slate-800">{value}</p>
+        <p className="text-xs text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{title}</p>
+        <p className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 font-mono-data">{value}</p>
       </div>
     </CardContent>
   </Card>
@@ -294,40 +273,32 @@ export default function EmployeeList() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5">
       {/* 页面标题区 */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-              boxShadow: '0 4px 14px rgba(79, 70, 229, 0.35)',
-            }}
-          >
-            <Users className="h-6 w-6 text-white" />
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+            <Users className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">员工管理</h1>
-            <p className="text-slate-500">管理生产人员信息，支持按厂区、部门筛选</p>
+            <h1 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">员工管理</h1>
+            <p className="text-sm text-zinc-400 dark:text-zinc-500">管理生产人员信息，支持按厂区、部门筛选</p>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <Button
             variant="outline"
+            size="sm"
             onClick={handleExport}
-            className="rounded-xl h-11 border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/30"
+            className="rounded-lg h-9 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300"
           >
-            <Download className="h-4 w-4 mr-2 text-cyan-600" />
+            <Download className="h-4 w-4 mr-2" />
             导出
           </Button>
           <Button
+            size="sm"
             onClick={openAddModal}
-            className="rounded-xl h-11 font-semibold"
-            style={{
-              background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-              boxShadow: '0 4px 14px rgba(8, 145, 178, 0.35)',
-            }}
+            className="rounded-lg h-9 bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200"
           >
             <Plus className="h-4 w-4 mr-2" />
             新增员工
@@ -336,50 +307,39 @@ export default function EmployeeList() {
       </div>
 
       {/* 统计卡片 */}
-      <div className="grid grid-cols-4 gap-4">
-        <StatCard title="总员工数" value={stats.total} icon={Users} gradient="linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)" delay={0} />
-        <StatCard title="在职员工" value={stats.active} icon={UserCheck} gradient="linear-gradient(135deg, #059669 0%, #10b981 100%)" delay={100} />
-        <StatCard title="离职员工" value={stats.inactive} icon={UserX} gradient="linear-gradient(135deg, #64748b 0%, #94a3b8 100%)" delay={200} />
-        <StatCard title="厂区分布" value={factories.length} icon={Building2} gradient="linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)" delay={300} />
+      <div className="grid grid-cols-4 gap-3">
+        <StatCard title="总员工数" value={stats.total} icon={Users} delay={0} />
+        <StatCard title="在职员工" value={stats.active} icon={UserCheck} delay={100} />
+        <StatCard title="离职员工" value={stats.inactive} icon={UserX} delay={200} />
+        <StatCard title="厂区分布" value={factories.length} icon={Building2} delay={300} />
       </div>
 
       {/* 筛选工具栏 */}
-      <Card
-        className="border-0 animate-slide-up"
-        style={{
-          background: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-          animationDelay: '400ms'
-        }}
-      >
-        <CardContent className="p-5">
-          <div className="flex flex-wrap gap-4 items-end">
-            <div className="w-72">
-              <Label className="mb-2 block text-sm font-semibold text-slate-700">
-                <Search className="h-4 w-4 inline mr-1 text-cyan-600" />
+      <Card className="terminal-card">
+        <CardContent className="p-4">
+          <div className="flex flex-wrap gap-3 items-end">
+            <div className="w-64">
+              <Label className="mb-1.5 block text-xs font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                 搜索
               </Label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
                 <Input
                   placeholder="搜索工号、姓名、部门"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                  className="pl-9 rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:border-zinc-400 dark:focus:border-zinc-600"
                 />
               </div>
             </div>
-            <div className="w-48">
-              <Label className="mb-2 block text-sm font-semibold text-slate-700">
-                <Building2 className="h-4 w-4 inline mr-1 text-cyan-600" />
+            <div className="w-40">
+              <Label className="mb-1.5 block text-xs font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                 厂区
               </Label>
               <Select
                 value={selectedFactory}
                 onChange={(e) => setSelectedFactory(e.target.value)}
-                className="rounded-xl h-11 border-slate-200"
+                className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
               >
                 <SelectItem value="">全部厂区</SelectItem>
                 {factories.map((f) => (
@@ -388,22 +348,22 @@ export default function EmployeeList() {
               </Select>
             </div>
             <div className="w-48">
-              <Label className="mb-2 block text-sm font-semibold text-slate-700">
-                <Filter className="h-4 w-4 inline mr-1 text-cyan-600" />
+              <Label className="mb-1.5 block text-xs font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                 状态
               </Label>
               <Tabs value={selectedStatus} onValueChange={setSelectedStatus}>
-                <TabsList className="grid w-full grid-cols-3 rounded-xl h-11">
-                  <TabsTrigger value="all">全部</TabsTrigger>
-                  <TabsTrigger value="active">在职</TabsTrigger>
-                  <TabsTrigger value="inactive">离职</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 rounded-lg h-9 bg-zinc-100 dark:bg-zinc-800">
+                  <TabsTrigger value="all" className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:text-zinc-800 dark:data-[state=active]:text-zinc-100">全部</TabsTrigger>
+                  <TabsTrigger value="active" className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:text-zinc-800 dark:data-[state=active]:text-zinc-100">在职</TabsTrigger>
+                  <TabsTrigger value="inactive" className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:text-zinc-800 dark:data-[state=active]:text-zinc-100">离职</TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
             <Button
               variant="outline"
+              size="sm"
               onClick={resetFilters}
-              className="rounded-xl h-11 border-slate-200 hover:border-cyan-400"
+              className="rounded-lg h-9 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               重置
@@ -413,124 +373,107 @@ export default function EmployeeList() {
       </Card>
 
       {/* 员工表格 */}
-      <Card
-        className="border-0 overflow-hidden animate-slide-up"
-        style={{
-          background: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '20px',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-          animationDelay: '500ms'
-        }}
-      >
+      <Card className="terminal-card">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50/80 hover:bg-slate-50/80">
-                <TableHead className="font-semibold text-slate-600">员工信息</TableHead>
-                <TableHead className="font-semibold text-slate-600">部门/职位</TableHead>
-                <TableHead className="font-semibold text-slate-600">厂区</TableHead>
-                <TableHead className="font-semibold text-slate-600">联系方式</TableHead>
-                <TableHead className="font-semibold text-slate-600">状态</TableHead>
-                <TableHead className="font-semibold text-slate-600">入职日期</TableHead>
-                <TableHead className="text-right font-semibold text-slate-600">操作</TableHead>
+              <TableRow className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">员工信息</TableHead>
+                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">部门/职位</TableHead>
+                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">厂区</TableHead>
+                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">联系方式</TableHead>
+                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">状态</TableHead>
+                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">入职日期</TableHead>
+                <TableHead className="text-right font-medium text-zinc-500 dark:text-zinc-400">操作</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-16">
-                    <div className="flex items-center justify-center gap-3 text-slate-400">
-                      <div className="animate-spin h-6 w-6 border-2 border-cyan-500 border-t-transparent rounded-full" />
+                  <TableCell colSpan={7} className="text-center py-12">
+                    <div className="flex items-center justify-center gap-2 text-zinc-400 dark:text-zinc-500">
+                      <div className="animate-spin h-5 w-5 border-2 border-zinc-300 dark:border-zinc-600 border-t-zinc-500 dark:border-t-zinc-400 rounded-full" />
                       加载中...
                     </div>
                   </TableCell>
                 </TableRow>
               ) : employees.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-16 text-slate-400">
-                    <Users className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                    <p>暂无员工数据</p>
+                  <TableCell colSpan={7} className="text-center py-12 text-zinc-400 dark:text-zinc-500">
+                    <Users className="h-10 w-10 mx-auto mb-2 opacity-20" />
+                    <p className="text-sm">暂无员工数据</p>
                   </TableCell>
                 </TableRow>
               ) : (
                 employees.map((employee) => (
-                  <TableRow key={employee.id} className="hover:bg-slate-50/60">
+                  <TableRow key={employee.id} className="border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <Avatar className="h-11 w-11">
-                          <AvatarFallback
-                            className="text-white font-semibold"
-                            style={{
-                              background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-                            }}
-                          >
+                        <Avatar className="h-9 w-9">
+                          <AvatarFallback className="text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800">
                             {getInitials(employee.name)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold text-slate-800">{employee.name}</p>
-                          <p className="text-sm text-slate-400">{employee.employee_no}</p>
+                          <p className="font-medium text-zinc-800 dark:text-zinc-200">{employee.name}</p>
+                          <p className="text-xs text-zinc-400 dark:text-zinc-500 font-mono-data">{employee.employee_no}</p>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="text-slate-700">{employee.department || '-'}</p>
-                        <p className="text-sm text-slate-400">{employee.position || '-'}</p>
+                        <p className="text-zinc-700 dark:text-zinc-300 text-sm">{employee.department || '-'}</p>
+                        <p className="text-xs text-zinc-400 dark:text-zinc-500">{employee.position || '-'}</p>
                       </div>
                     </TableCell>
                     <TableCell>
                       {employee.factory_name ? (
-                        <span
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-                          style={{ background: 'rgba(8, 145, 178, 0.1)', color: '#0891b2' }}
-                        >
-                          <Building2 className="h-3 w-3" />
+                        <span className="badge-status-neutral">
+                          <Building2 className="h-3 w-3 mr-1" />
                           {employee.factory_name}
                         </span>
                       ) : (
-                        <span className="text-slate-400">-</span>
+                        <span className="text-zinc-400 dark:text-zinc-600">-</span>
                       )}
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
                         {employee.phone && (
-                          <p className="flex items-center gap-1 text-slate-600">
-                            <Phone className="h-3 w-3 text-slate-400" />
+                          <p className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400">
+                            <Phone className="h-3 w-3 text-zinc-400 dark:text-zinc-600" />
                             {employee.phone}
                           </p>
                         )}
                         {employee.email && (
-                          <p className="flex items-center gap-1 text-slate-400 mt-0.5">
+                          <p className="flex items-center gap-1 text-zinc-400 dark:text-zinc-500 text-xs mt-0.5">
                             <Mail className="h-3 w-3" />
                             {employee.email}
                           </p>
                         )}
-                        {!employee.phone && !employee.email && <span className="text-slate-400">-</span>}
+                        {!employee.phone && !employee.email && <span className="text-zinc-400 dark:text-zinc-600">-</span>}
                       </div>
                     </TableCell>
                     <TableCell><StatusBadge status={employee.status} /></TableCell>
                     <TableCell>
                       {employee.hire_date
-                        ? new Date(employee.hire_date).toLocaleDateString()
-                        : <span className="text-slate-400">-</span>
+                        ? <span className="text-zinc-500 dark:text-zinc-400 text-sm">{new Date(employee.hire_date).toLocaleDateString()}</span>
+                        : <span className="text-zinc-400 dark:text-zinc-600">-</span>
                       }
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-end gap-1">
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => openEditModal(employee)}
-                          className="h-9 w-9 rounded-lg hover:bg-cyan-50 hover:text-cyan-600"
+                          className="h-8 w-8 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
                         >
                           <Edit2 className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-9 w-9 rounded-lg hover:bg-red-50 hover:text-red-500"
+                          className="h-8 w-8 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400"
                           onClick={() => openDeleteDialog(employee)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -547,29 +490,17 @@ export default function EmployeeList() {
 
       {/* 分页 */}
       {totalPages > 1 && (
-        <div
-          className="flex items-center justify-between animate-slide-up"
-          style={{
-            animationDelay: '600ms'
-          }}
-        >
-          <p className="text-sm text-slate-500">
-            共 <span className="font-semibold text-slate-700">{total}</span> 条记录，第 <span className="font-semibold text-slate-700">{page}</span> / {totalPages} 页
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-zinc-400 dark:text-zinc-500">
+            共 <span className="font-medium text-zinc-700 dark:text-zinc-300">{total}</span> 条记录，第 <span className="font-medium text-zinc-700 dark:text-zinc-300">{page}</span> / {totalPages} 页
           </p>
-          <div
-            className="flex gap-2 p-2 rounded-xl"
-            style={{
-              background: 'rgba(255, 255, 255, 0.7)',
-              backdropFilter: 'blur(10px)',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
-            }}
-          >
+          <div className="flex gap-1 p-1 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-lg h-10 w-10 p-0 border-slate-200 hover:border-cyan-400"
+              className="rounded h-8 w-8 p-0 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 disabled:opacity-50"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -578,29 +509,29 @@ export default function EmployeeList() {
               .map((p, i, arr) => (
                 <div key={p} className="flex items-center">
                   {i > 0 && arr[i - 1] !== p - 1 && (
-                    <span className="px-2 text-slate-400">...</span>
+                    <span className="px-2 text-zinc-400 dark:text-zinc-600">...</span>
                   )}
                   <Button
-                    variant={page === p ? 'default' : 'outline'}
+                    variant={page === p ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setPage(p)}
-                    className="rounded-lg h-10 min-w-[40px] font-medium"
-                    style={page === p ? {
-                      background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-                      boxShadow: '0 4px 10px rgba(8, 145, 178, 0.3)',
-                      border: 'none'
-                    } : {}}
+                    className={cn(
+                      "rounded h-8 min-w-[32px] text-xs",
+                      page === p
+                        ? "bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200"
+                        : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400"
+                    )}
                   >
                     {p}
                   </Button>
                 </div>
               ))}
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="rounded-lg h-10 w-10 p-0 border-slate-200 hover:border-cyan-400"
+              className="rounded h-8 w-8 p-0 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 disabled:opacity-50"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -610,113 +541,99 @@ export default function EmployeeList() {
 
       {/* 新增/编辑弹窗 */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent
-          className="max-w-2xl border-0"
-          style={{
-            borderRadius: '16px',
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-          }}
-        >
+        <DialogContent className="max-w-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-100">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-                  boxShadow: '0 4px 14px rgba(8, 145, 178, 0.35)',
-                }}
-              >
-                {editingEmployee ? <Edit2 className="h-5 w-5 text-white" /> : <Plus className="h-5 w-5 text-white" />}
+            <DialogTitle className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                {editingEmployee ? <Edit2 className="h-4 w-4 text-zinc-500 dark:text-zinc-400" /> : <Plus className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />}
               </div>
               {editingEmployee ? '编辑员工' : '新增员工'}
             </DialogTitle>
           </DialogHeader>
-          <div className="grid gap-5 py-4">
+          <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="employee_no" className="text-slate-700">
-                  工号 <span className="text-red-500">*</span>
+              <div className="space-y-1.5">
+                <Label htmlFor="employee_no" className="text-zinc-500 dark:text-zinc-400 text-sm">
+                  工号 <span className="text-rose-500 dark:text-rose-400">*</span>
                 </Label>
                 <Input
                   id="employee_no"
                   value={formData.employee_no}
                   onChange={(e) => setFormData({ ...formData, employee_no: e.target.value })}
                   placeholder="请输入工号"
-                  className="rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 dark:focus:border-zinc-600"
                 />
-                {formErrors.employee_no && <p className="text-sm text-red-500">{formErrors.employee_no}</p>}
+                {formErrors.employee_no && <p className="text-xs text-rose-500 dark:text-rose-400">{formErrors.employee_no}</p>}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-slate-700">
-                  姓名 <span className="text-red-500">*</span>
+              <div className="space-y-1.5">
+                <Label htmlFor="name" className="text-zinc-500 dark:text-zinc-400 text-sm">
+                  姓名 <span className="text-rose-500 dark:text-rose-400">*</span>
                 </Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="请输入姓名"
-                  className="rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 dark:focus:border-zinc-600"
                 />
-                {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                {formErrors.name && <p className="text-xs text-rose-500 dark:text-rose-400">{formErrors.name}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="department" className="text-slate-700">部门</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="department" className="text-zinc-500 dark:text-zinc-400 text-sm">部门</Label>
                 <Input
                   id="department"
                   value={formData.department}
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                   placeholder="请输入部门"
-                  className="rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 dark:focus:border-zinc-600"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="position" className="text-slate-700">职位</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="position" className="text-zinc-500 dark:text-zinc-400 text-sm">职位</Label>
                 <Input
                   id="position"
                   value={formData.position}
                   onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                   placeholder="请输入职位"
-                  className="rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 dark:focus:border-zinc-600"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-slate-700">联系电话</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="phone" className="text-zinc-500 dark:text-zinc-400 text-sm">联系电话</Label>
                 <Input
                   id="phone"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="请输入电话"
-                  className="rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 dark:focus:border-zinc-600"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-700">邮箱</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-zinc-500 dark:text-zinc-400 text-sm">邮箱</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="请输入邮箱"
-                  className="rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 dark:focus:border-zinc-600"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="factory" className="text-slate-700">所属厂区</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="factory" className="text-zinc-500 dark:text-zinc-400 text-sm">所属厂区</Label>
                 <Select
                   value={formData.factory_id?.toString() || ''}
                   onChange={(e) => setFormData({ ...formData, factory_id: e.target.value ? parseInt(e.target.value) : null })}
-                  className="rounded-xl h-11 border-slate-200"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
                 >
                   <SelectItem value="">未分配</SelectItem>
                   {factories.map((f) => (
@@ -724,12 +641,12 @@ export default function EmployeeList() {
                   ))}
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="status" className="text-slate-700">状态</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="status" className="text-zinc-500 dark:text-zinc-400 text-sm">状态</Label>
                 <Select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
-                  className="rounded-xl h-11 border-slate-200"
+                  className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
                 >
                   <SelectItem value="active">在职</SelectItem>
                   <SelectItem value="inactive">离职</SelectItem>
@@ -737,14 +654,14 @@ export default function EmployeeList() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="hire_date" className="text-slate-700">入职日期</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="hire_date" className="text-zinc-500 dark:text-zinc-400 text-sm">入职日期</Label>
               <Input
                 id="hire_date"
                 type="date"
                 value={formData.hire_date ? formData.hire_date.split('T')[0] : ''}
                 onChange={(e) => setFormData({ ...formData, hire_date: e.target.value ? new Date(e.target.value).toISOString() : null })}
-                className="rounded-xl h-11 border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/20"
+                className="rounded-lg h-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 dark:focus:border-zinc-600"
               />
             </div>
           </div>
@@ -752,17 +669,13 @@ export default function EmployeeList() {
             <Button
               variant="outline"
               onClick={() => setModalOpen(false)}
-              className="rounded-xl h-11 px-6 border-slate-200 hover:border-slate-300"
+              className="rounded-lg h-9 px-4 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300"
             >
               取消
             </Button>
             <Button
               onClick={handleSave}
-              className="rounded-xl h-11 px-6 font-semibold"
-              style={{
-                background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-                boxShadow: '0 4px 14px rgba(8, 145, 178, 0.35)',
-              }}
+              className="rounded-lg h-9 px-4 bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200"
             >
               保存
             </Button>
@@ -772,34 +685,20 @@ export default function EmployeeList() {
 
       {/* 删除确认对话框 */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent
-          className="border-0"
-          style={{
-            borderRadius: '16px',
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-          }}
-        >
+        <DialogContent className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-100">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-slate-800 flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
-                  boxShadow: '0 4px 14px rgba(220, 38, 38, 0.35)',
-                }}
-              >
-                <Trash2 className="h-5 w-5 text-white" />
+            <DialogTitle className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-500/10 flex items-center justify-center">
+                <Trash2 className="h-4 w-4 text-rose-600 dark:text-rose-400" />
               </div>
               确认删除
             </DialogTitle>
-            <DialogDescription className="text-slate-500 pt-2">
-              确定要删除员工 <span className="font-semibold text-slate-800">{deletingEmployee?.name}</span> 吗？此操作不可撤销。
+            <DialogDescription className="text-zinc-500 dark:text-zinc-500 pt-2">
+              确定要删除员工 <span className="font-medium text-zinc-700 dark:text-zinc-300">{deletingEmployee?.name}</span> 吗？此操作不可撤销。
             </DialogDescription>
           </DialogHeader>
           {deleteError && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm">
+            <div className="bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 p-3 rounded-lg text-sm border border-rose-200 dark:border-rose-500/20">
               {deleteError}
             </div>
           )}
@@ -807,18 +706,13 @@ export default function EmployeeList() {
             <Button
               variant="outline"
               onClick={() => setDeleteDialogOpen(false)}
-              className="rounded-xl h-11 px-6 border-slate-200 hover:border-slate-300"
+              className="rounded-lg h-9 px-4 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300"
             >
               取消
             </Button>
             <Button
-              variant="destructive"
               onClick={handleDelete}
-              className="rounded-xl h-11 px-6"
-              style={{
-                background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
-                boxShadow: '0 4px 14px rgba(220, 38, 38, 0.35)',
-              }}
+              className="rounded-lg h-9 px-4 bg-rose-600 dark:bg-rose-500 hover:bg-rose-700 dark:hover:bg-rose-600 text-white"
             >
               删除
             </Button>

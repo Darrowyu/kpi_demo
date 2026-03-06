@@ -7,7 +7,6 @@ import {
   Calculator,
   CheckCircle2,
   FileUp,
-  Sparkles,
   ArrowRight,
   Database
 } from 'lucide-react'
@@ -21,7 +20,6 @@ import { Calendar } from '../components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table'
 import { cn } from '../lib/utils'
-import '../styles/animations.css'
 
 interface UploadResult {
   sheet: string
@@ -54,18 +52,13 @@ const FileDropZone = ({
     onDragLeave={onDragLeave}
     onDrop={onDrop}
     className={cn(
-      "relative flex flex-col items-center justify-center w-full h-72 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-300 overflow-hidden",
+      "relative flex flex-col items-center justify-center w-full h-64 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200",
       isDragging
-        ? "border-cyan-500 bg-cyan-50/50"
+        ? "border-blue-400 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20"
         : file
-          ? "border-emerald-400 bg-emerald-50/30"
-          : "border-slate-200 bg-white hover:border-cyan-400 hover:bg-slate-50/50"
+          ? "border-emerald-500/50 bg-emerald-500/5"
+          : "border-zinc-200 bg-white hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-600 dark:hover:bg-zinc-900/50"
     )}
-    style={{
-      boxShadow: isDragging
-        ? '0 0 40px rgba(8, 145, 178, 0.15), inset 0 0 20px rgba(8, 145, 178, 0.05)'
-        : 'inset 0 2px 4px rgba(0, 0, 0, 0.02)',
-    }}
   >
     <input
       ref={fileInputRef}
@@ -75,53 +68,39 @@ const FileDropZone = ({
       className="hidden"
     />
 
-    {/* 背景装饰 */}
-    <div className="absolute inset-0 opacity-30">
-      <div
-        className="absolute top-10 left-10 w-32 h-32 rounded-full blur-3xl"
-        style={{ background: 'linear-gradient(135deg, rgba(8, 145, 178, 0.2), rgba(79, 70, 229, 0.1))' }}
-      />
-      <div
-        className="absolute bottom-10 right-10 w-40 h-40 rounded-full blur-3xl"
-        style={{ background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(249, 115, 22, 0.1))' }}
-      />
-    </div>
-
     <div className="relative z-10 flex flex-col items-center justify-center">
       <div
         className={cn(
-          "w-20 h-20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300",
-          isDragging && "scale-110"
+          "w-16 h-16 rounded-xl flex items-center justify-center mb-4 transition-all duration-200",
+          isDragging && "scale-105"
         )}
-        style={{
-          background: isDragging
-            ? 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)'
-            : file
-              ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
-              : 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-          boxShadow: isDragging || file
-            ? '0 8px 30px rgba(0, 0, 0, 0.2)'
-            : '0 4px 14px rgba(0, 0, 0, 0.08)',
-        }}
       >
         {file ? (
-          <CheckCircle2 className="w-10 h-10 text-white" />
+          <div className="w-16 h-16 rounded-xl bg-emerald-100 flex items-center justify-center dark:bg-emerald-500/10">
+            <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+          </div>
         ) : (
-          <UploadCloud className={cn(
-            "w-10 h-10 transition-colors duration-300",
-            isDragging ? "text-white" : "text-slate-400"
-          )} />
+          <div className={cn(
+            "w-16 h-16 rounded-xl flex items-center justify-center transition-colors duration-200",
+            isDragging ? "bg-blue-100 dark:bg-blue-900/30" : "bg-zinc-100 dark:bg-zinc-800"
+          )}>
+            <UploadCloud className={cn(
+              "w-8 h-8 transition-colors duration-200",
+              isDragging ? "text-blue-600 dark:text-blue-400" : "text-zinc-500 dark:text-zinc-400"
+            )} />
+          </div>
         )}
       </div>
 
-      <p className="text-base text-slate-700 font-medium mb-2">
+      <p className="text-sm text-zinc-700 font-medium mb-1 dark:text-zinc-300">
         {file ? '文件已选择' : (
           <>
-            <span className="text-cyan-600 font-semibold">点击上传</span> 或拖拽文件到此处
+            <span className="text-zinc-900 dark:text-zinc-100">点击上传</span>
+            <span className="text-zinc-500 dark:text-zinc-500"> 或拖拽文件到此处</span>
           </>
         )}
       </p>
-      <p className="text-sm text-slate-400">
+      <p className="text-xs text-zinc-400 dark:text-zinc-600">
         支持 Excel 格式 (.xlsx, .xls)
       </p>
     </div>
@@ -144,33 +123,21 @@ const FilePreview = ({
   }
 
   return (
-    <div
-      className="flex items-center justify-between p-5 rounded-2xl animate-scale-in"
-      style={{
-        background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%)',
-        border: '1px solid rgba(5, 150, 105, 0.2)',
-      }}
-    >
-      <div className="flex items-center gap-4">
-        <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center"
-          style={{
-            background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-            boxShadow: '0 4px 14px rgba(5, 150, 105, 0.35)',
-          }}
-        >
-          <FileSpreadsheet className="h-7 w-7 text-white" />
+    <div className="flex items-center justify-between p-4 rounded-xl bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/5 dark:border-emerald-500/20">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center dark:bg-emerald-500/10">
+          <FileSpreadsheet className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
         </div>
         <div>
-          <p className="text-base font-semibold text-slate-800">{file.name}</p>
-          <p className="text-sm text-slate-400">{formatFileSize(file.size)}</p>
+          <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{file.name}</p>
+          <p className="text-xs text-zinc-500 dark:text-zinc-500">{formatFileSize(file.size)}</p>
         </div>
       </div>
       <button
         onClick={onRemove}
-        className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:text-rose-600 hover:bg-rose-100 transition-all duration-200 dark:hover:text-rose-400 dark:hover:bg-rose-500/10"
       >
-        <X className="h-5 w-5" />
+        <X className="h-4 w-4" />
       </button>
     </div>
   )
@@ -248,62 +215,44 @@ export default function DataUpload() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto">
       {/* 页面标题 */}
-      <div className="flex items-center gap-4">
-        <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center"
-          style={{
-            background: 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-            boxShadow: '0 4px 14px rgba(8, 145, 178, 0.35)',
-          }}
-        >
-          <FileUp className="h-6 w-6 text-white" />
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-lg bg-zinc-100 flex items-center justify-center dark:bg-zinc-800">
+          <FileUp className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">数据上传</h1>
-          <p className="text-slate-500">上传Excel生产记录文件，支持批量导入</p>
+          <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">数据上传</h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-500">上传Excel生产记录文件，支持批量导入</p>
         </div>
       </div>
 
       {/* 上传配置区 */}
-      <Card
-        className="border-0 overflow-hidden animate-slide-up relative"
-        style={{
-          background: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '24px',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.05)',
-          animationDelay: '100ms',
-        }}
-      >
-        <CardHeader className="px-8 pt-8 pb-4">
-          <div className="flex items-center gap-3">
-            <Sparkles className="h-5 w-5 text-amber-500" />
-            <CardTitle className="text-lg font-bold text-slate-800">上传配置</CardTitle>
-          </div>
-          <CardDescription className="text-slate-500 ml-8">
+      <Card className="terminal-card bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+        <CardHeader className="px-4 pt-4 pb-3">
+          <CardTitle className="text-base font-medium text-zinc-800 dark:text-zinc-200">上传配置</CardTitle>
+          <CardDescription className="text-zinc-500 text-sm dark:text-zinc-500">
             选择数据所属月份并上传生产记录文件
           </CardDescription>
         </CardHeader>
-        <CardContent className="px-8 pb-8 space-y-6">
+        <CardContent className="px-4 pb-4 space-y-4">
           {/* 月份选择器 */}
           <div className="flex items-center gap-4">
-            <label className="text-sm font-semibold text-slate-700 min-w-[60px]">数据月份</label>
+            <label className="text-sm font-medium text-zinc-500 min-w-[60px] dark:text-zinc-400">数据月份</label>
             <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-[240px] justify-start text-left font-normal rounded-xl h-12 border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/30",
-                    !month && "text-slate-400"
+                    "w-[200px] justify-start text-left font-normal rounded-lg h-10 bg-white border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 text-zinc-800 dark:bg-zinc-950 dark:border-zinc-800 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:text-zinc-200",
+                    !month && "text-zinc-500 dark:text-zinc-500"
                   )}
                 >
-                  <CalendarIcon className="mr-3 h-4 w-4 text-cyan-600" />
+                  <CalendarIcon className="mr-2 h-4 w-4 text-zinc-500 dark:text-zinc-500" />
                   {month ? format(month, 'yyyy年MM月', { locale: zhCN }) : '选择月份'}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 rounded-2xl" align="start">
+              <PopoverContent className="w-auto p-0 rounded-lg bg-white border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800" align="start">
                 <Calendar
                   mode="single"
                   selected={month}
@@ -315,6 +264,7 @@ export default function DataUpload() {
                   }}
                   initialFocus
                   defaultMonth={month}
+                  className="bg-white border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800"
                 />
               </PopoverContent>
             </Popover>
@@ -339,24 +289,21 @@ export default function DataUpload() {
           <Button
             onClick={handleUpload}
             disabled={!file || loading}
-            className="w-full h-14 text-base font-semibold rounded-xl transition-all duration-300 disabled:opacity-50"
-            style={{
-              background: !file
-                ? '#e2e8f0'
-                : loading
-                  ? 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)'
-                  : 'linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)',
-              boxShadow: file && !loading ? '0 8px 30px rgba(8, 145, 178, 0.35)' : 'none',
-            }}
+            className={cn(
+              "w-full h-11 text-sm font-medium rounded-lg transition-all duration-200",
+              !file
+                ? "bg-zinc-200 text-zinc-500 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-500"
+                : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            )}
           >
             {loading ? (
               <>
-                <div className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-zinc-900 border-t-transparent dark:border-zinc-900 dark:border-t-transparent" />
                 正在导入数据...
               </>
             ) : (
               <>
-                <Database className="mr-3 h-5 w-5" />
+                <Database className="mr-2 h-4 w-4" />
                 {uploadSuccess ? '重新上传' : '开始导入'}
               </>
             )}
@@ -366,69 +313,46 @@ export default function DataUpload() {
 
       {/* 上传结果表格 */}
       {results.length > 0 && (
-        <Card
-          className="border-0 overflow-hidden animate-slide-up relative"
-          style={{
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
-            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.05)',
-            animationDelay: '200ms',
-          }}
-        >
-          <CardHeader className="px-8 pt-8 pb-4 flex flex-row items-center justify-between">
+        <Card className="terminal-card bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+          <CardHeader className="px-4 pt-4 pb-3 flex flex-row items-center justify-between">
             <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-                  boxShadow: '0 4px 14px rgba(5, 150, 105, 0.35)',
-                }}
-              >
-                <CheckCircle2 className="h-5 w-5 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center dark:bg-emerald-500/10">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <CardTitle className="text-lg font-bold text-slate-800">导入成功</CardTitle>
-                <CardDescription className="text-slate-500">
-                  共导入 <span className="font-semibold text-emerald-600">{results.reduce((sum, r) => sum + r.imported, 0)}</span> 条记录
+                <CardTitle className="text-base font-medium text-zinc-800 dark:text-zinc-200">导入成功</CardTitle>
+                <CardDescription className="text-zinc-500 text-sm dark:text-zinc-500">
+                  共导入 <span className="font-medium text-emerald-600 dark:text-emerald-400">{results.reduce((sum, r) => sum + r.imported, 0)}</span> 条记录
                 </CardDescription>
               </div>
             </div>
             <Button
               onClick={handleGoToKPI}
-              className="rounded-xl h-11 px-6 font-semibold"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)',
-                boxShadow: '0 4px 14px rgba(245, 158, 11, 0.35)',
-              }}
+              size="sm"
+              className="rounded-lg h-9 px-4 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
             >
               <Calculator className="h-4 w-4 mr-2" />
               去计算KPI
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </CardHeader>
-          <CardContent className="px-8 pb-8">
-            <div className="overflow-hidden rounded-xl border border-slate-100">
+          <CardContent className="px-4 pb-4">
+            <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50/80">
-                    <TableHead className="font-semibold text-slate-600">Sheet名称</TableHead>
-                    <TableHead className="font-semibold text-slate-600">员工</TableHead>
-                    <TableHead className="font-semibold text-slate-600 text-right">导入记录数</TableHead>
+                  <TableRow className="bg-zinc-100 border-b border-zinc-200 hover:bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-800 dark:hover:bg-zinc-800">
+                    <TableHead className="font-medium text-zinc-600 dark:text-zinc-400">Sheet名称</TableHead>
+                    <TableHead className="font-medium text-zinc-600 dark:text-zinc-400">员工</TableHead>
+                    <TableHead className="font-medium text-zinc-600 dark:text-zinc-400 text-right">导入记录数</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {results.map((result, index) => (
-                    <TableRow key={index} className="hover:bg-slate-50/60">
-                      <TableCell className="font-medium text-slate-700">{result.sheet}</TableCell>
-                      <TableCell className="text-slate-600">{result.employee}</TableCell>
+                    <TableRow key={index} className="border-b border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800/50">
+                      <TableCell className="font-medium text-zinc-800 dark:text-zinc-200">{result.sheet}</TableCell>
+                      <TableCell className="text-zinc-500 dark:text-zinc-400">{result.employee}</TableCell>
                       <TableCell className="text-right">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold"
-                          style={{
-                            background: 'rgba(5, 150, 105, 0.1)',
-                            color: '#059669',
-                          }}
-                        >
+                        <span className="badge-status-success">
                           {result.imported}
                         </span>
                       </TableCell>

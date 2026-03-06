@@ -4,7 +4,7 @@ const Dialog = ({ children, open, onOpenChange }: { children: React.ReactNode; o
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50" onClick={() => onOpenChange?.(false)} />
+      <div className="fixed inset-0 bg-black/70" onClick={() => onOpenChange?.(false)} />
       <div className="relative z-50">{children}</div>
     </div>
   )
@@ -16,7 +16,7 @@ const DialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <div
     ref={ref}
-    className={`relative bg-white rounded-lg shadow-lg w-full max-w-lg max-h-[85vh] overflow-auto p-6 ${className || ''}`}
+    className={`relative bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-lg max-h-[85vh] overflow-auto p-6 ${className || ''}`}
     {...props}
   >
     {children}
@@ -36,7 +36,7 @@ const DialogTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
-  <h2 ref={ref} className={`text-lg font-semibold leading-none tracking-tight ${className || ''}`} {...props} />
+  <h2 ref={ref} className={`text-lg font-semibold leading-none tracking-tight text-zinc-100 ${className || ''}`} {...props} />
 ))
 DialogTitle.displayName = "DialogTitle"
 
