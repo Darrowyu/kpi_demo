@@ -13,9 +13,15 @@ from app.models.product import Product
 from app.models.device import Device
 from app.models.station import Station
 from app.models.standard_param import StandardParam
+from app.models.factory import Factory
 
 # 创建表
 models.Base.metadata.create_all(bind=engine)
+
+# 基础数据 - 厂区 (id, code, name, description)
+FACTORIES = [
+    (1, "ZN", "知恩", "默认厂区"),
+]
 
 # 基础数据 - 产品型号
 PRODUCTS = [
@@ -110,6 +116,16 @@ def init_stations(db: Session):
     print("[OK] 工站初始化完成")
 
 
+def init_factories(db: Session):
+    """初始化厂区"""
+    for id, code, name, description in FACTORIES:
+        existing = db.query(Factory).filter(Factory.id == id).first()
+        if not existing:
+            db.add(Factory(id=id, code=code, name=name, description=description))
+    db.commit()
+    print("[OK] 厂区初始化完成")
+
+
 def init_standard_params_from_config(db: Session):
     """从原config.py导入标准参数"""
     # 导入原config中的STANDARD_PARAMS
@@ -141,6 +157,7 @@ def init_standard_params_from_config(db: Session):
 
         if not existing:
             db.add(StandardParam(
+                factory_id=1,  # 默认厂区：知恩
                 product_id=product_id,
                 device_id=device_id,
                 station_id=station_id,
@@ -160,6 +177,7 @@ def main():
     db = SessionLocal()
     try:
         print("开始初始化基础数据...")
+        init_factories(db)
         init_products(db)
         init_devices(db)
         init_stations(db)

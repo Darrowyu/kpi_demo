@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import pandas as pd
 from io import BytesIO
 from datetime import datetime
@@ -11,6 +11,41 @@ from app.models.employee import Employee
 from app.models.production_record import ProductionRecord
 
 router = APIRouter()
+
+
+def expand_multi_station_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    展开包含多个工站的行 - 与CLI版本 _expand_multi_station_rows 逻辑一致
+    例如: '纸箱打两条 黄色包装带' -> 拆分为两行
+    """
+    if 'station_name' not in df.columns:
+        return df
+
+    expanded_rows = []
+    for idx, row in df.iterrows():
+        station_value = str(row['station_name']) if pd.notna(row['station_name']) else ''
+
+        # 按空白字符分割工站名称
+        stations = [s.strip() for s in station_value.split() if s.strip()]
+
+        if len(stations) <= 1:
+            # 单行工站，直接保留
+            expanded_rows.append(row.to_dict())
+        else:
+            # 多工站行，拆分为多行，数据按比例分摊
+            n_stations = len(stations)
+            for station in stations:
+                new_row = row.to_dict().copy()
+                new_row['station_name'] = station
+                # 工时按工站数量平均分摊
+                new_row['production_hours'] = row['production_hours'] / n_stations
+                # 数量按工站数量平均分摊（取整）
+                new_row['good_quantity'] = int(row['good_quantity'] / n_stations)
+                new_row['rework_quantity'] = int(row['rework_quantity'] / n_stations)
+                new_row['scrap_quantity'] = int(row['scrap_quantity'] / n_stations)
+                expanded_rows.append(new_row)
+
+    return pd.DataFrame(expanded_rows)
 
 
 def parse_month_from_sheet_name(sheet_name: str) -> Optional[str]:
@@ -207,6 +242,9 @@ def upload_production_records(
                         break
         
         df_renamed = df.rename(columns=renamed_columns)
+
+        # 多工站拆分 - 与CLI版本逻辑一致
+        df_renamed = expand_multi_station_rows(df_renamed)
 
         imported_count = 0
         errors = []
