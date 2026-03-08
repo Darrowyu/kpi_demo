@@ -61,7 +61,7 @@ const StatCard = ({
         <Icon className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
       </div>
     </CardHeader>
-    <CardContent className="px-4 pb-4">
+    <CardContent className="pt-1 px-4 pb-4">
       <div className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100 font-mono-data">{value}</div>
       {subtitle && (
         <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-1">{subtitle}</p>

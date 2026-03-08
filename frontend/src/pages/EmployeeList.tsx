@@ -23,14 +23,6 @@ import {
   Select,
   SelectItem
 } from '../components/ui/select'
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell
-} from '../components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs'
 import {
@@ -45,10 +37,6 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
-  Filter,
-  Briefcase,
-  Mail,
-  Phone,
   RefreshCw
 } from 'lucide-react'
 import { cn } from '../lib/utils'
@@ -76,22 +64,20 @@ const StatusBadge = ({ status }: { status: string }) => {
 const StatCard = ({
   title,
   value,
-  icon: Icon,
-  delay = 0
+  icon: Icon
 }: {
   title: string
   value: number
   icon: React.ElementType
-  delay?: number
 }) => (
-  <Card className="terminal-card">
-    <CardContent className="p-4 flex items-center gap-3">
+  <Card className="terminal-card bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+    <CardContent className="pt-4 pb-4 flex items-center gap-3">
       <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
         <Icon className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
       </div>
       <div>
         <p className="text-xs text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{title}</p>
-        <p className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 font-mono-data">{value}</p>
+        <p className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 font-mono-data mt-1">{value}</p>
       </div>
     </CardContent>
   </Card>
@@ -373,118 +359,106 @@ export default function EmployeeList() {
       </Card>
 
       {/* 员工表格 */}
-      <Card className="terminal-card">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">员工信息</TableHead>
-                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">部门/职位</TableHead>
-                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">厂区</TableHead>
-                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">联系方式</TableHead>
-                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">状态</TableHead>
-                <TableHead className="font-medium text-zinc-500 dark:text-zinc-400">入职日期</TableHead>
-                <TableHead className="text-right font-medium text-zinc-500 dark:text-zinc-400">操作</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12">
-                    <div className="flex items-center justify-center gap-2 text-zinc-400 dark:text-zinc-500">
-                      <div className="animate-spin h-5 w-5 border-2 border-zinc-300 dark:border-zinc-600 border-t-zinc-500 dark:border-t-zinc-400 rounded-full" />
-                      加载中...
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : employees.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12 text-zinc-400 dark:text-zinc-500">
-                    <Users className="h-10 w-10 mx-auto mb-2 opacity-20" />
-                    <p className="text-sm">暂无员工数据</p>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                employees.map((employee) => (
-                  <TableRow key={employee.id} className="border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-9 w-9">
-                          <AvatarFallback className="text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800">
-                            {getInitials(employee.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-zinc-800 dark:text-zinc-200">{employee.name}</p>
-                          <p className="text-xs text-zinc-400 dark:text-zinc-500 font-mono-data">{employee.employee_no}</p>
+      <Card className="terminal-card bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-medium text-zinc-700 dark:text-zinc-200 flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <Users className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+            </div>
+            员工列表
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <table className="w-full text-sm">
+              <thead className="bg-zinc-100 dark:bg-zinc-800">
+                <tr>
+                  <th className="h-10 px-3 text-left font-medium text-zinc-500 dark:text-zinc-400">工号</th>
+                  <th className="h-10 px-3 text-left font-medium text-zinc-500 dark:text-zinc-400">姓名</th>
+                  <th className="h-10 px-3 text-left font-medium text-zinc-500 dark:text-zinc-400">部门</th>
+                  <th className="h-10 px-3 text-left font-medium text-zinc-500 dark:text-zinc-400">职位</th>
+                  <th className="h-10 px-3 text-left font-medium text-zinc-500 dark:text-zinc-400">厂区</th>
+                  <th className="h-10 px-3 text-left font-medium text-zinc-500 dark:text-zinc-400">状态</th>
+                  <th className="h-10 px-3 text-left font-medium text-zinc-500 dark:text-zinc-400">入职日期</th>
+                  <th className="h-10 px-3 text-right font-medium text-zinc-500 dark:text-zinc-400">操作</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                {loading ? (
+                  <tr>
+                    <td colSpan={8} className="p-3 text-center py-12">
+                      <div className="flex items-center justify-center gap-2 text-zinc-400 dark:text-zinc-500">
+                        <div className="animate-spin h-5 w-5 border-2 border-zinc-300 dark:border-zinc-600 border-t-zinc-500 dark:border-t-zinc-400 rounded-full" />
+                        加载中...
+                      </div>
+                    </td>
+                  </tr>
+                ) : employees.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="p-3 text-center py-12 text-zinc-400 dark:text-zinc-500">
+                      <Users className="h-10 w-10 mx-auto mb-2 opacity-20" />
+                      <p className="text-sm">暂无员工数据</p>
+                    </td>
+                  </tr>
+                ) : (
+                  employees.map((employee) => (
+                    <tr key={employee.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+                      <td className="p-3 text-zinc-500 dark:text-zinc-500 font-mono-data text-xs">{employee.employee_no}</td>
+                      <td className="p-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800">
+                              {getInitials(employee.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="font-medium text-zinc-800 dark:text-zinc-200">{employee.name}</span>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="text-zinc-700 dark:text-zinc-300 text-sm">{employee.department || '-'}</p>
-                        <p className="text-xs text-zinc-400 dark:text-zinc-500">{employee.position || '-'}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {employee.factory_name ? (
-                        <span className="badge-status-neutral">
-                          <Building2 className="h-3 w-3 mr-1" />
-                          {employee.factory_name}
-                        </span>
-                      ) : (
-                        <span className="text-zinc-400 dark:text-zinc-600">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        {employee.phone && (
-                          <p className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400">
-                            <Phone className="h-3 w-3 text-zinc-400 dark:text-zinc-600" />
-                            {employee.phone}
-                          </p>
+                      </td>
+                      <td className="p-3 text-zinc-700 dark:text-zinc-300 text-sm">{employee.department || '-'}</td>
+                      <td className="p-3 text-zinc-700 dark:text-zinc-300 text-sm">{employee.position || '-'}</td>
+                      <td className="p-3">
+                        {employee.factory_name ? (
+                          <span className="badge-status-neutral">
+                            <Building2 className="h-3 w-3 mr-1" />
+                            {employee.factory_name}
+                          </span>
+                        ) : (
+                          <span className="text-zinc-400 dark:text-zinc-600">-</span>
                         )}
-                        {employee.email && (
-                          <p className="flex items-center gap-1 text-zinc-400 dark:text-zinc-500 text-xs mt-0.5">
-                            <Mail className="h-3 w-3" />
-                            {employee.email}
-                          </p>
-                        )}
-                        {!employee.phone && !employee.email && <span className="text-zinc-400 dark:text-zinc-600">-</span>}
-                      </div>
-                    </TableCell>
-                    <TableCell><StatusBadge status={employee.status} /></TableCell>
-                    <TableCell>
-                      {employee.hire_date
-                        ? <span className="text-zinc-500 dark:text-zinc-400 text-sm">{new Date(employee.hire_date).toLocaleDateString()}</span>
-                        : <span className="text-zinc-400 dark:text-zinc-600">-</span>
-                      }
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEditModal(employee)}
-                          className="h-8 w-8 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400"
-                          onClick={() => openDeleteDialog(employee)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                      </td>
+                      <td className="p-3"><StatusBadge status={employee.status} /></td>
+                      <td className="p-3 text-zinc-500 dark:text-zinc-400 text-sm font-mono-data">
+                        {employee.hire_date
+                          ? new Date(employee.hire_date).toLocaleDateString()
+                          : '-'
+                        }
+                      </td>
+                      <td className="p-3 text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openEditModal(employee)}
+                            className="h-8 w-8 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400"
+                            onClick={() => openDeleteDialog(employee)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </CardContent>
       </Card>
 
